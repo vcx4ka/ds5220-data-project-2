@@ -46,7 +46,10 @@ def generate_plot_and_upload(table, bucket):
     
     try:
         # Query all records
-        response = table.scan()
+        response = table.query(
+            KeyConditionExpression='station_id = :sid',
+            ExpressionAttributeValues={':sid': '01646500'}
+        )
         items = response['Items']
         
         if not items:
