@@ -84,7 +84,6 @@ def generate_plot_and_upload(table, bucket):
                 Key='plot.png',
                 Body=f.read(),
                 ContentType='image/png',
-                ACL='public-read'
             )
         
         # Upload CSV
@@ -94,9 +93,8 @@ def generate_plot_and_upload(table, bucket):
                 Key='data.csv',
                 Body=f.read(),
                 ContentType='text/csv',
-                ACL='public-read'
             )
-                    
+
         print(f"Uploaded plot and CSV to {bucket}")
         print(f"Total records: {len(df)}")
     except Exception as e:
