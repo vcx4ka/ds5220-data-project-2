@@ -1,3 +1,64 @@
+# Water Tracker - USGS River Level Monitoring Pipeline
+
+## Data Source Summary
+
+This pipeline uses the **USGS Water Services API** to monitor real-time water levels from the Potomac River at Little Falls Pump Station near Washington, DC (station ID: 01646500). The API endpoint updates every 15 minutes, with information about the gage height (in feet) of the river. This data is ingested in JSON format.
+
+## Scheduled Application Process
+
+The containerized Python application runs as a Kubernetes CronJob every 15 minutes, performing the following operations:
+
+### 1. Data Collection
+- Fetches the most recent water level reading from the USGS API
+- Parses the JSON response to extract timestamp and water level in feet
+- Implements duplicate detection to avoid writing the same reading twice
+
+### 2. Data Persistence (DynamoDB)
+- Stores each unique reading in Amazon DynamoDB
+- Table structure:
+  - Partition key: `station_id` (e.g., "01646500")
+  - Sort key: `timestamp` (ISO 8601 format)
+  - Attribute: `water_level_ft` (Decimal)
+- Enables efficient time-series queries and historical analysis
+
+### 3. Historical Backfill (First Run Only)
+- On initial execution, fetches the last 72 hours of historical data
+- Populates the database with 800+ records spanning multiple days
+- Ensures the plot shows meaningful trends immediately
+
+### 4. Visualization Generation
+- Queries all historical records from DynamoDB
+- Generates a time-series plot using matplotlib
+- Creates a CSV export of all collected data
+
+### 5. Website Publishing (S3)
+- Uploads `plot.png` and `data.csv` to a public S3 bucket
+- Configures correct content types for browser display
+- Overwrites files on each run to show evolving data
+
+### 6. Kubernetes Orchestration
+- CronJob runs automatically every 15 minutes
+- Failed jobs are automatically retried
+- Successful job history is preserved for 10 runs
+- Each run executes in an isolated pod with IAM role permissions
+
+## Output Data and Plot Description
+
+### Data File (`data.csv`)
+The CSV file contains three columns:
+- `station_id`: USGS station identifier (01646500)
+- `timestamp`: ISO 8601 formatted timestamp with timezone (US/Eastern)
+- `water_level_ft`: River stage height in feet (Decimal)
+
+### Plot Image (plot.png)
+The visualization shows:
+
+- X-axis: Time (last 72+ hours, rotating 45° for readability)
+- Y-axis: Water level in feet
+- Line plot: Continuous time-series showing river stage fluctuations
+
+
+
 # DS5220 Data Project 2
 
 Create, schedule, and run a containerized data pipeline in Kubernetes.
