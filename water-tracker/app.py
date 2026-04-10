@@ -113,7 +113,7 @@ if __name__ == "__main__":
     print(f"Using region: {region} \nTable: {table_name} \nBucket: {bucket}")
     
     dynamodb = boto3.resource('dynamodb', region_name=region)
-    table = dynamodb.Table('table_name')
+    table = dynamodb.Table(table_name)
     
     try:
         response = table.query(

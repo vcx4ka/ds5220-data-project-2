@@ -1,0 +1,22 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::ds5220-dp2-vcx4ka/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:Query"
+      ],
+      "Resource": "arn:aws:dynamodb:us-east-1:491085421032:table/water-tracking"
+    }
+  ]
+}
