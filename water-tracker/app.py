@@ -116,7 +116,11 @@ if __name__ == "__main__":
     table = dynamodb.Table('table_name')
     
     try:
-        response = table.scan(Limit=1)
+        response = table.query(
+            KeyConditionExpression='station_id = :sid',
+            ExpressionAttributeValues={':sid': '01646500'},
+            Limit=1
+        )
         if not response['Items']:
             backfill_historical(table)
 
