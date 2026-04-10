@@ -77,8 +77,8 @@ def generate_plot_and_upload(table, bucket):
         
         # Upload to S3
         s3 = boto3.client('s3', region_name=os.environ.get('AWS_REGION', 'us-east-1'))
-        s3.upload_file('/tmp/plot.png', bucket, 'plot.png')
-        s3.upload_file('/tmp/data.csv', bucket, 'data.csv')
+        s3.upload_file('/tmp/plot.png', bucket, 'plot.png', ExtraArgs={'ContentType': 'image/png'})
+        s3.upload_file('/tmp/data.csv', bucket, 'data.csv', ExtraArgs={'ContentType': 'text/csv'})
         
         print(f"Uploaded plot and CSV to {bucket}")
         print(f"Total records: {len(df)}")
