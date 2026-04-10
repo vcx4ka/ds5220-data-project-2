@@ -5,6 +5,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
+from decimal import Decimal
 
 def get_water_data():
     # Fetch water level data
@@ -35,7 +36,7 @@ def write_to_dynamodb(data, table='water-tracking'):
             table.put_item(Item={
                 'station_id': '01646500',
                 'timestamp': timestamp,
-                'water_level_ft': water_level
+                'water_level_ft': Decimal(str(water_level))
             })
             print(f"Written: {timestamp} - {water_level} ft")
     except Exception as e:
